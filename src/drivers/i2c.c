@@ -1,6 +1,5 @@
 #include "i2c.h"
 
-void i2c_init(void)
-{
+void i2c_init(void) {
     // TODO: implement
 }
