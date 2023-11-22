@@ -83,7 +83,7 @@ $(OBJ_DIR)/%.o: %.c
 all: $(TARGET)
 
 clean:
-	$(RM) -rf $(BUILD_DIR)
+	@$(RM) -rf $(BUILD_DIR)
 
 flash: $(TARGET) 
 	@$(DEBUG) tilib "prog $(TARGET)"
