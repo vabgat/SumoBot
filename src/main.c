@@ -1,13 +1,19 @@
-#include "app/drive.h"
-#include "app/enemy.h"
-#include "drivers/i2c.h"
-#include "drivers/uart.h"
+#include <msp430.h>
+
+static void test_blink_led(void)
+{
+    // TODO: Use io functions
+    P1DIR |= BIT0;
+    volatile unsigned int i; // volatile to prevent optimization
+    while(1){
+        P1NOUT ^= BIT0;
+        for (i = 1000; i>0; i--) {} //delay
+    }
+}
 
 int main(void) {
-    // TODO: these are just to test build
-    uart_init();
-    i2c_init();
-    enemy_init();
-    drive_init();
+    // TODO: Move to mcu_init
+    WDTCTL = WDTPW + WDTHOLD; // stop watchdog timer
+    test_blink_led();
     return 0;
 }
