@@ -61,6 +61,7 @@ typedef enum {
     IO_PWM_MOTORS_LEFT = IO_35,
     IO_PWM_MOTORS_RIGHT = IO_36,
     IO_MOTORS_RIGHT_CC_1 = IO_37,
+
 #endif
 } io_e;
 
@@ -78,6 +79,7 @@ typedef enum {
 
 /* Resistor enable register. Enables the internal pull up/pull down
  * only applicable if input */
+
 typedef enum {
     IO_RESISTOR_DISABLED,
     IO_RESISTOR_ENABLED,

@@ -107,8 +107,6 @@ static void test_launchpad_io_pins_input(void) {
 }
 
 int main(void) {
-    // TODO: Move to mcu_init
-    WDTCTL = WDTPW + WDTHOLD;  // stop watchdog timer
     test_launchpad_io_pins_input();
     return 0;
 }
