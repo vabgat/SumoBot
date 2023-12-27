@@ -4,6 +4,6 @@
 /* Initialization of common microcontroller functionality that affects all peripherals
  * (e.g. watchdog, clocks, pins) */
 
- void mcu_init(void);
+void mcu_init(void);
 
- #endif //MCU_INIT_H
+#endif  // MCU_INIT_H

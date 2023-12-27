@@ -5,13 +5,9 @@
 /* Watchdog is enabled by default and will reset the microcontroller repeatedly if not
  * explicitly stopped */
 
- static void watchdog_stop(void)
- {
-    WDTCTL = WDTPW + WDTHOLD;
- }
+static void watchdog_stop(void) { WDTCTL = WDTPW + WDTHOLD; }
 
- void mcu_init(void)
- {
+void mcu_init(void) {
     // Must stop watchdog first before anything else
     watchdog_stop();
- }
+}
