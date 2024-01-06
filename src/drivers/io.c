@@ -107,14 +107,14 @@ static const struct io_config io_initial_config[IO_PORT_CNT * IO_PIN_CNT_PER_POR
     [IO_MOTORS_RIGHT_CC_1] = {IO_SELECT_GPIO, IO_RESISTOR_DISABLED, IO_DIR_OUTPUT, IO_OUT_LOW},
     [IO_MOTORS_RIGHT_CC_2] = {IO_SELECT_GPIO, IO_RESISTOR_DISABLED, IO_DIR_OUTPUT, IO_OUT_LOW},
 
-    // Output driven by A0, direction must be set to output
+    // Output driven by timer A0, direction must be set to output
     [IO_PWM_MOTORS_LEFT]  = {IO_SELECT_ALT1, IO_RESISTOR_DISABLED, IO_DIR_OUTPUT, IO_OUT_LOW},
     [IO_PWM_MOTORS_RIGHT] = {IO_SELECT_ALT1, IO_RESISTOR_DISABLED, IO_DIR_OUTPUT, IO_OUT_LOW},
 
     /* Input
      * Range sensor provides open-drain output and should be connected to an external pull-up
      * resistor, but I missed that on the PCB, so use the internal pull-up instead. */
-    [IO_RANGE_SENSOR_FRONT_INT] = {IO_SELECT_GPIO, IO_RESISTOR_DISABLED, IO_DIR_INPUT, IO_OUT_HIGH},
+    [IO_RANGE_SENSOR_FRONT_INT] = {IO_SELECT_GPIO, IO_RESISTOR_ENABLED, IO_DIR_INPUT, IO_OUT_HIGH},
 
     // Outputs
     [IO_XSHUT_FRONT]       = {IO_SELECT_GPIO, IO_RESISTOR_DISABLED, IO_DIR_OUTPUT, IO_OUT_LOW},
@@ -131,8 +131,39 @@ static const struct io_config io_initial_config[IO_PORT_CNT * IO_PIN_CNT_PER_POR
 #endif
 };
 
+typedef enum { HW_TYPE_LAUNCHPAD, HW_TYPE_NSUMO } hw_type_e;
+
+/* NSUMO has a pullup resistor on pin 3.4, so read that pin to detect the hardware type.
+ * The Launchpad lacks the physical pins on port3 , but the corresponding port3 registerd still
+ * exists internally. */
+static hw_type_e io_detect_hw_type(void) {
+    P3SEL &= ~(BIT4);
+    P3SEL2 &= ~(BIT4);
+    P3DIR &= ~(BIT4);
+    P3REN &= ~(BIT4);
+    P3OUT &= ~(BIT4);
+    // If pin 3.4 is high it means there is an external pullup resistor
+    return P3IN & BIT4 ? HW_TYPE_NSUMO : HW_TYPE_LAUNCHPAD;
+}
 void io_init(void) {
-    // TODO: Loop initialize all pins
+
+#if defined(NSUMO)
+    // TODO: Assert
+    if (io_detect_hw_type() != HW_TYPE_NSUMO) {
+        while (1) {
+        }
+    }
+#elif defined(LAUNCHPAD)
+    // TODO: Assert
+    if (io_detect_hw_type() != HW_TYPE_LAUNCHPAD) {
+        while (1) {
+        }
+    }
+#else
+    // TODO: Assert
+    while (1) {
+    }
+#endif
     for (io_e io = (io_e)IO_10; io < ARRAY_SIZE(io_initial_config); io++) {
         io_configure(io, &io_initial_config[io]);
     }
