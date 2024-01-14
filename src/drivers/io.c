@@ -57,13 +57,6 @@ static volatile uint8_t* const port_sel2_regs[IO_PORT_CNT] = {&P1SEL2, &P2SEL2, 
 #define UNUSED_CONFIG                                                                              \
     { IO_SELECT_GPIO, IO_RESISTOR_ENABLED, IO_DIR_OUTPUT, IO_OUT_LOW }
 
-void io_configure(io_e io, const struct io_config* config) {
-    io_set_select(io, config->select);
-    io_set_direction(io, config->dir);
-    io_set_out(io, config->out);
-    io_set_resistor(io, config->resistor);
-}
-
 // This array holds the initial configuration for all IO pins.
 static const struct io_config io_initial_config[IO_PORT_CNT * IO_PIN_CNT_PER_PORT] = {
     [IO_TEST_LED] = {IO_SELECT_GPIO, IO_RESISTOR_DISABLED, IO_DIR_OUTPUT, IO_OUT_LOW},
@@ -167,6 +160,29 @@ void io_init(void) {
     for (io_e io = (io_e)IO_10; io < ARRAY_SIZE(io_initial_config); io++) {
         io_configure(io, &io_initial_config[io]);
     }
+}
+
+void io_configure(io_e io, const struct io_config* config) {
+    io_set_select(io, config->select);
+    io_set_direction(io, config->dir);
+    io_set_out(io, config->out);
+    io_set_resistor(io, config->resistor);
+}
+
+void io_get_current_config(io_e io, struct io_config* current_config) {
+    const uint8_t port       = io_port(io);
+    const uint8_t pin        = io_pin_bit(io);
+    const uint8_t sel1       = *port_sel1_regs[port] & pin;
+    const uint8_t sel2       = *port_sel2_regs[port] & pin;
+    current_config->select   = (io_select_e)((sel2 << 1) | sel1);
+    current_config->resistor = (io_resistor_e)(*port_ren_regs[port] & pin);
+    current_config->dir      = (io_dir_e)(*port_dir_regs[port] & pin);
+    current_config->out      = (io_out_e)(*port_out_regs[port] & pin);
+}
+
+bool io_config_compare(const struct io_config* cfg1, const struct io_config* cfg2) {
+    return (cfg1->dir == cfg2->dir) && (cfg1->out == cfg2->out)
+        && (cfg1->resistor == cfg2->resistor) && (cfg1->select == cfg2->select);
 }
 
 void io_set_select(io_e io, io_select_e select) {

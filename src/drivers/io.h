@@ -1,6 +1,8 @@
 #ifndef IO_H
 #define IO_H
 
+#include <stdbool.h>
+
 /* IO pins handling including pinmapping, initialization, and configuration.
  * This wraps the more crude register defines provided in the headers from
  * Texas Instruments */
@@ -68,10 +70,7 @@ typedef enum {
     IO_SELECT_ALT3,
 } io_select_e;
 
-typedef enum {
-    IO_DIR_OUTPUT,
-    IO_DIR_INPUT,
-} io_dir_e;
+typedef enum { IO_DIR_INPUT, IO_DIR_OUTPUT } io_dir_e;
 
 typedef enum {
     IO_RESISTOR_DISABLED,
@@ -97,6 +96,8 @@ struct io_config {
 
 void    io_init(void);
 void    io_configure(io_e io, const struct io_config* config);
+void    io_get_current_config(io_e io, struct io_config* current_config);
+bool    io_config_compare(const struct io_config* cfg1, const struct io_config* cfg2);
 void    io_set_select(io_e io, io_select_e select);
 void    io_set_direction(io_e io, io_dir_e direction);
 void    io_set_resistor(io_e io, io_resistor_e resistor);

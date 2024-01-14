@@ -39,8 +39,10 @@ FORMAT = clang-format-12
 TARGET = $(BUILD_DIR)/$(TARGET_NAME)
 
 SOURCES_WITH_HEADERS = \
+			 src/common/assert_handler.c \
 			 src/drivers/mcu_init.c \
 			 src/drivers/io.c \
+			 src/drivers/led.c \
 			 src/app/drive.c  \
 			 src/app/enemy.c \
 
