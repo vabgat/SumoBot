@@ -61,7 +61,7 @@ SOURCES = 	\
 			src/test/test.c \
 			$(SOURCES_WITH_HEADERS)
 # Delete object file to force rebuild when changing test (there is probably a better way ...)
-$(shell rm -f $(BUILD_DIR)/obj/src/test/test.o)
+$(shell rm -f $(BUILD_DIR)/obj/$(TARGET_HW)/src/test/test.o)
 else
 SOURCES = \
 		src/main.c \

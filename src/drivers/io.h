@@ -87,6 +87,16 @@ typedef enum {
     IO_IN_HIGH,
 } io_in_e;
 
+typedef enum {
+    IO_PORT1,
+    IO_PORT2,
+#if defined(NSUMO)
+    IO_PORT3
+#endif
+} io_port_e;
+
+typedef enum { IO_TRIGGER_RISING, IO_TRIGGER_FALLING } io_trigger_e;
+
 struct io_config {
     io_select_e   select;
     io_resistor_e resistor;
@@ -103,5 +113,11 @@ void    io_set_direction(io_e io, io_dir_e direction);
 void    io_set_resistor(io_e io, io_resistor_e resistor);
 void    io_set_out(io_e io, io_out_e out);
 io_in_e io_get_input(io_e io);
+
+typedef void (*isr_function)(void);
+void io_configure_interrupt(io_e io, io_trigger_e trigger, isr_function isr);
+void io_deconfigure_interrupt(io_e io);
+void io_enable_interrupt(io_e io);
+void io_disable_interrupt(io_e io);
 
 #endif  // IO_H
