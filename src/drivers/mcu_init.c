@@ -9,5 +9,7 @@ static void watchdog_stop(void) { WDTCTL = WDTPW + WDTHOLD; }
 void mcu_init(void) {
     // Must stop watchdog first before anything else
     watchdog_stop();
+    // Enables globally
+    _enable_interrupts();
     io_init();
 }

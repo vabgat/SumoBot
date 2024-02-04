@@ -12,7 +12,8 @@ static const struct io_config led_config = {
 };
 
 static bool initialized = false;
-void        led_init(void) {
+
+void led_init(void) {
     ASSERT(!initialized);
     struct io_config current_config;
     io_get_current_config(IO_TEST_LED, &current_config);
