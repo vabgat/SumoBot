@@ -3,6 +3,7 @@
 #include "drivers/io.h"
 #include "drivers/led.h"
 #include "drivers/mcu_init.h"
+#include "drivers/uart.h"
 #include <msp430.h>
 
 SUPPRESS_UNUSED
@@ -133,6 +134,17 @@ static void test_io_interrupt(void)
     io_enable_interrupt(IO_11);
     io_enable_interrupt(IO_20);
     while(1);
+}
+
+SUPPRESS_UNUSED
+static void test_uart(void)
+{
+    test_setup();
+    uart_init();
+    while(1){
+        uart_print_interrupt("UART working\n");
+        BUSY_WAIT_ms(1000);
+    }
 }
 
 int main()
