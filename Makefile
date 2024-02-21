@@ -34,7 +34,7 @@ LIB_DIRS = $(MSPGCC_INCLUDE_DIR)
 INCLUDE_DIRS = $(MSPGCC_INCLUDE_DIR) \
 							./src \
 							./external \
-							./external/printf
+							./
 
 # Toolchain
 CC = $(MSPGCC_BIN_DIR)/msp430-elf-gcc
@@ -51,12 +51,14 @@ TARGET = $(BUILD_DIR)/bin/$(TARGET_HW)/$(TARGET_NAME)
 SOURCES_WITH_HEADERS = \
 			 src/common/assert_handler.c \
 			 src/common/ring_buffer.c \
+			 src/common/trace.c \
 			 src/drivers/mcu_init.c \
 			 src/drivers/io.c \
 			 src/drivers/led.c \
 			 src/drivers/uart.c \
 			 src/app/drive.c  \
 			 src/app/enemy.c \
+			 external/printf/printf.c \
 
 ifdef TEST
 SOURCES = 	\
@@ -80,12 +82,17 @@ OBJECTS = $(patsubst %,$(OBJ_DIR)/%,$(OBJECT_NAMES))
 HW_DEFINE = $(addprefix -D,$(HW))
 TEST_DEFINES = $(addprefix -DTEST=,$(TEST))
 DEFINES = $(HW_DEFINE) \
-		  $(TEST_DEFINES)
+		  $(TEST_DEFINES) \
+		  -DPRINTF_INCLUDE_CONFIG_H \
 
 # Static Analysis
 ## Don't check the msp430 helper headers (they have a lot of ifdefs)
-CPPCHECK_INCLUDES = ./src
-CPPCHECK_IGNORE = external/printf
+CPPCHECK_INCLUDES = ./src ./
+IGNORE_FILES_FORMAT_CPPCHECK = \
+		external/printf/printf.c \
+		external/printf/printf.h
+SOURCES_FORMAT_CPPCHECK = $(filter-out $(IGNORE_FILES_FORMAT_CPPCHECK),$(SOURCES))
+HEADERS_FORMAT = $(filter-out $(IGNORE_FILES_FORMAT_CPPCHECK),$(HEADERS))		
 CPPCHECK_FLAGS = \
 	--quiet --enable=all --error-exitcode=1 \
 	--inline-suppr \
@@ -93,7 +100,6 @@ CPPCHECK_FLAGS = \
 	--suppress=unmatchedSuppression \
 	--suppress=unusedFunction \
 	$(addprefix -I, $(CPPCHECK_INCLUDES)) \
-	$(addprefix -i, $(CPPCHECK_IGNORE))
 
 # Flags
 MCU = msp430g2553
@@ -124,10 +130,10 @@ flash: $(TARGET)
 	@$(DEBUG) tilib "prog $(TARGET)"
 
 cppcheck:
-	@$(CPPCHECK) $(CPPCHECK_FLAGS) $(SOURCES)
+	@$(CPPCHECK) $(CPPCHECK_FLAGS) $(SOURCES_FORMAT_CPPCHECK)
 
 format:
-	@$(FORMAT) -i $(SOURCES) $(HEADERS)
+	@$(FORMAT) -i $(SOURCES_FORMAT_CPPCHECK) $(HEADERS_FORMAT)
 
 size: $(TARGET)
 	@$(SIZE) $(TARGET)
