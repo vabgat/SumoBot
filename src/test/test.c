@@ -5,6 +5,7 @@
 #include "drivers/mcu_init.h"
 #include "drivers/uart.h"
 #include <msp430.h>
+#include "common/trace.h"
 
 SUPPRESS_UNUSED
 static void test_setup(void) { 
@@ -142,7 +143,28 @@ static void test_uart(void)
     test_setup();
     uart_init();
     while(1){
-        uart_print_interrupt("UART working\n");
+        _putchar('U');
+        _putchar('A');
+        _putchar('R');
+        _putchar('T');
+        _putchar(' ');
+        _putchar('W');
+        _putchar('O');
+        _putchar('R');
+        _putchar('K');
+        _putchar('S');
+        _putchar('\n');
+        BUSY_WAIT_ms(1000);
+    }
+}
+
+SUPPRESS_UNUSED
+static void test_trace(void)
+{
+    test_setup();
+    trace_init();
+    while(1){
+        TRACE("UART working! %d",2024);
         BUSY_WAIT_ms(1000);
     }
 }
