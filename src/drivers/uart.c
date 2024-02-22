@@ -63,10 +63,7 @@ INTERRUPT_FUNCTION(USCIAB0TX_VECTOR) isr_uart_tx() {
     }
 }
 
-static bool initialized = false;
-
-void uart_init(void) {
-    ASSERT(!initialized);
+static void uart_configure(void) {
 
     /* Reset module. It stays in reset until cleared. The module should be in reset
      *  condition while configuring according to the user guide SLAU144K. */
@@ -90,12 +87,19 @@ void uart_init(void) {
 
     // Clear reset to release the module for operation
     UCA0CTL1 &= ~UCSWRST;
+}
+
+static bool initialized = false;
+void        uart_init(void) {
+    ASSERT(!initialized);
+
+    uart_configure();
 
     // Interrupt triggers when TX buffer is empty, which it is after boot, so clear it here.
     uart_tx_clear_interrupt();
 
     // Enable TX interrupt
-    UC0IE |= UCA0TXIE;
+    uart_tx_enable_interrupt();
 
     initialized = true;
 }
@@ -116,5 +120,29 @@ void _putchar(char c) {
     // Some terminals expect line feed (\r) after carriage return (\n) for proper new line
     if (c == '\n') {
         _putchar('\r');
+    }
+}
+
+void uart_init_assert(void) {
+    uart_tx_disable_interrupt();
+    uart_configure();
+}
+
+void uart_putchar_polling(char c) {
+    while (!(IFG2 & UCA0TXIFG)) {
+    }
+    UCA0TXBUF = c;
+    if (c == '\n') {
+        while (!(IFG2 & UCA0TXIFG)) {
+        }
+        uart_putchar_polling('\r');
+    }
+}
+
+void uart_trace_assert(const char* string) {
+    int i = 0;
+    while (string[i] != '\0') {
+        uart_putchar_polling(string[i]);
+        i++;
     }
 }
