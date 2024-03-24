@@ -6,9 +6,9 @@
 #ifndef DISABLE_TRACE
 void trace_init(void);
 void trace(const char* format, ...);
-/* #else
+#else
 #define trace_init() ;
-#define trace(fmt, ...) ; */
+#define trace(fmt, ...) ;
 #endif
 
 #endif

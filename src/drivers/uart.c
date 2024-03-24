@@ -106,6 +106,10 @@ void        uart_init(void) {
 
 // mpaland/printf needs this to be named _putchar
 void _putchar(char c) {
+    // Some terminals expect line feed (\r) after carriage return (\n) for proper new line
+    if (c == '\n') {
+        _putchar('\r');
+    }
     // Poll if full
     while (ring_buffer_full(&tx_buffer)) {
     }
@@ -117,10 +121,6 @@ void _putchar(char c) {
         uart_tx_start();
     }
     uart_tx_enable_interrupt();
-    // Some terminals expect line feed (\r) after carriage return (\n) for proper new line
-    if (c == '\n') {
-        _putchar('\r');
-    }
 }
 
 void uart_init_assert(void) {
@@ -129,14 +129,12 @@ void uart_init_assert(void) {
 }
 
 void uart_putchar_polling(char c) {
+    if (c == '\n') {
+        uart_putchar_polling('\r');
+    }
     while (!(IFG2 & UCA0TXIFG)) {
     }
     UCA0TXBUF = c;
-    if (c == '\n') {
-        while (!(IFG2 & UCA0TXIFG)) {
-        }
-        uart_putchar_polling('\r');
-    }
 }
 
 void uart_trace_assert(const char* string) {
