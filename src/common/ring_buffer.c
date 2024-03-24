@@ -8,6 +8,14 @@ void ring_buffer_put(struct ring_buffer* rb, uint8_t data) {
     if (rb->head == rb->size) {
         rb->head = 0;
     }
+
+    // If ring_buffer is full, remove oldest element
+    if (rb->head == rb->tail) {
+        rb->tail++;
+        if (rb->tail == rb->size) {
+            rb->tail = 0;
+        }
+    }
 }
 uint8_t ring_buffer_get(struct ring_buffer* rb) {
     const uint8_t data = rb->buffer[rb->tail];
