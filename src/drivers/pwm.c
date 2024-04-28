@@ -23,7 +23,7 @@
  * gives a base period of 100 ticks, which means the duty cycle
  * percent corresponds to the TA0CCRx directly without any conversion.
  * 20 kHz also gives stable motor behaviour. */
-#define PWM_TIMER_FREQ_HZ (SMCLK / TIMER_INPUT_DIVIDER_ID_3)
+#define PWM_TIMER_FREQ_HZ (SMCLK / TIMER_INPUT_DIVIDER_3)
 #define PWM_PERIOD_FREQ_HZ (20000)
 #define PWM_PERIOD_TICKS (PWM_TIMER_FREQ_HZ / PWM_PERIOD_FREQ_HZ)
 static_assert(PWM_PERIOD_TICKS == 100, "Expect 100 ticks per period");

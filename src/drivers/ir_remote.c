@@ -6,7 +6,7 @@
 #include <msp430.h>
 #include <stdint.h>
 
-#define TICKS_PER_ms (SMCLK / TIMER_INPUT_DIVIDER_ID_3 / 1000u)
+#define TICKS_PER_ms (SMCLK / TIMER_INPUT_DIVIDER_3 / 1000u)
 #define TIMER_INTERRUPT_ms (1u)
 #define TIMER_INTERRUPT_TICKS (TICKS_PER_ms * TIMER_INTERRUPT_ms)
 static_assert(TIMER_INTERRUPT_TICKS <= 0xFFFF, "Ticks too large");

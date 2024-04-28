@@ -19,7 +19,7 @@
 #define MCLK CYCLES_16MHZ
 #define SMCLK MCLK
 
-#define TIMER_INPUT_DIVIDER_ID_3 (8u)
+#define TIMER_INPUT_DIVIDER_3 (8u)
 #define TIMER_MC_MASK (0x0030)
 
 #endif

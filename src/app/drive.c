@@ -80,9 +80,7 @@ void drive_set(drive_dir_e direction, drive_speed_e speed) {
         = speed_right > 0 ? TB6612FNG_MODE_FORWARD : TB6612FNG_MODE_REVERSE;
     tb6612fng_set_mode(TB6612FNG_RIGHT, mode_right);
     tb6612fng_set_pwm(TB6612FNG_RIGHT, ABS(speed_right));
-    TRACE("Drive direction is %d and speed for right is %d", mode_right, speed_right);
 #endif
-    TRACE("Drive direction is %d and speed for left is %d", mode_left, speed_left);
 }
 
 void drive_stop(void) {
