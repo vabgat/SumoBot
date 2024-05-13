@@ -2,6 +2,7 @@
 #define IO_H
 
 #include <stdbool.h>
+#include <stdint.h>
 
 /* IO pins handling including pinmapping, initialization, and configuration.
  * This wraps the more crude register defines provided in the headers from
@@ -19,22 +20,22 @@ typedef enum {
 
 typedef enum {
 #if defined(LAUNCHPAD)  // Launchpad (MSP430G2553IN20)
-    IO_TEST_LED         = IO_10,
-    IO_UART_RXD         = IO_11,
-    IO_UART_TXD         = IO_12,
-    IO_UNUSED_1         = IO_13,
-    IO_UNUSED_2         = IO_14,
-    IO_UNUSED_3         = IO_15,
-    IO_PWM_MOTORS_LEFT  = IO_16,
-    IO_UNUSED_5         = IO_17,
-    IO_IR_REMOTE        = IO_20,
-    IO_MOTORS_LEFT_CC_1 = IO_21,
-    IO_MOTORS_LEFT_CC_2 = IO_22,
-    IO_UNUSED_9         = IO_23,
-    IO_UNUSED_10        = IO_24,
-    IO_UNUSED_11        = IO_25,
-    IO_UNUSED_12        = IO_26,
-    IO_UNUSED_13        = IO_27,
+    IO_TEST_LED               = IO_10,
+    IO_UART_RXD               = IO_11,
+    IO_UART_TXD               = IO_12,
+    IO_LINE_DETECT_FRONT_LEFT = IO_13,
+    IO_UNUSED_2               = IO_14,
+    IO_UNUSED_3               = IO_15,
+    IO_PWM_MOTORS_LEFT        = IO_16,
+    IO_UNUSED_5               = IO_17,
+    IO_IR_REMOTE              = IO_20,
+    IO_MOTORS_LEFT_CC_1       = IO_21,
+    IO_MOTORS_LEFT_CC_2       = IO_22,
+    IO_UNUSED_9               = IO_23,
+    IO_UNUSED_10              = IO_24,
+    IO_UNUSED_11              = IO_25,
+    IO_UNUSED_12              = IO_26,
+    IO_UNUSED_13              = IO_27,
 #elif defined(NSUMO)  // Nsumo rev 2 (MSP430G2553IPW28)
     IO_LINE_DETECT_FRONT_RIGHT = IO_10,
     IO_UART_RXD                = IO_11,
@@ -104,15 +105,17 @@ struct io_config {
     io_out_e      out;
 };
 
-void    io_init(void);
-void    io_configure(io_e io, const struct io_config* config);
-void    io_get_current_config(io_e io, struct io_config* current_config);
-bool    io_config_compare(const struct io_config* cfg1, const struct io_config* cfg2);
-void    io_set_select(io_e io, io_select_e select);
-void    io_set_direction(io_e io, io_dir_e direction);
-void    io_set_resistor(io_e io, io_resistor_e resistor);
-void    io_set_out(io_e io, io_out_e out);
-io_in_e io_get_input(io_e io);
+void        io_init(void);
+void        io_configure(io_e io, const struct io_config* config);
+void        io_get_current_config(io_e io, struct io_config* current_config);
+bool        io_config_compare(const struct io_config* cfg1, const struct io_config* cfg2);
+void        io_set_select(io_e io, io_select_e select);
+void        io_set_direction(io_e io, io_dir_e direction);
+void        io_set_resistor(io_e io, io_resistor_e resistor);
+void        io_set_out(io_e io, io_out_e out);
+io_in_e     io_get_input(io_e io);
+const io_e* io_adc_pins(uint8_t* cnt);
+uint8_t     io_to_adc_idx(io_e io);
 
 typedef void (*isr_function)(void);
 void io_configure_interrupt(io_e io, io_trigger_e trigger, isr_function isr);
