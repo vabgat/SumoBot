@@ -8,6 +8,7 @@
 #include "drivers/pwm.h"
 #include "drivers/tb6612fng.h"
 #include "drivers/adc.h"
+#include "drivers/qre1113.h"
 #include <msp430.h>
 #include "common/trace.h"
 #include "app/drive.h"
@@ -199,7 +200,7 @@ static void test_pwm(void)
             TRACE("Set duty cycle to %d for %d ms", duty_cycles[i], wait_time);
             pwm_set_duty_cycle(PWM_TB6612FNG_LEFT, duty_cycles[i]);
             pwm_set_duty_cycle(PWM_TB6612FNG_RIGHT, duty_cycles[i]);
-            BUSY_WAIT_ms(3000);
+            BUSY_WAIT_ms(wait_time);
         }
     }
 }
@@ -312,6 +313,21 @@ static void test_adc(void)
         for (uint8_t i = 0; i < ADC_CHANNEL_COUNT; i++) {
             TRACE("ADC ch %u: %u", i, values[i]);
         }
+        BUSY_WAIT_ms(1000);
+    }
+}
+
+SUPPRESS_UNUSED
+static void test_qre1113(void)
+{
+    test_setup();
+    trace_init();
+    qre1113_init();
+    struct qre1113_voltages voltages = {0, 0, 0, 0};
+    while(1) {
+        qre1113_get_voltages(&voltages);
+        TRACE("Voltages fl %u fr %u bl %u br %u", voltages.front_left, voltages.front_right,
+                                                  voltages.back_left, voltages.back_right);
         BUSY_WAIT_ms(1000);
     }
 }
